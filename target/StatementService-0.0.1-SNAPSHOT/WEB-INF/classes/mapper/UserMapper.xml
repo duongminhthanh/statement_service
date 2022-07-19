@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.statement.mapper.UserMapper">
+
+    <select id="search"
+            resultType="com.service.statement.model.User">
+        <![CDATA[
+			SELECT
+			    id,
+                code,
+                full_name,
+                phone_no,
+                email,
+                birthday,
+                group_code,
+                department_code,
+			    status,
+                creater,
+                created_date,
+                editer,
+                edited_date
+			FROM "user"
+		]]>
+        <where>
+
+            <if test="userCode != null and userCode != '' ">
+                AND code ILIKE CONCAT('%' || #{userCode} ||'%')
+            </if>
+            <if test="userName != null and userName != '' ">
+                AND full_name ILIKE CONCAT('%' || #{userName} ||'%')
+            </if>
+            <if test="groupCode != null and groupCode != '' ">
+                AND group_code ILIKE CONCAT('%' || #{groupCode} ||'%')
+            </if>
+            <if test="departmentCode != null and departmentCode != '' ">
+                AND department_code ILIKE CONCAT('%' || #{departmentCode} ||'%')
+            </if>
+            <if test="status != null and status >= 0">
+                AND status = #{status}::bool
+            </if>
+        </where>
+        ORDER BY full_name
+        <if test="limit > 0">
+            OFFSET (#{page}-1) * #{limit} FETCH NEXT #{limit} ROWS ONLY
+        </if>
+    </select>
+
+    <select id="count" resultType="Integer">
+        <![CDATA[
+			SELECT COUNT(*) FROM "user"
+		]]>
+        <where>
+
+            <if test="userCode != null and userCode != '' ">
+                AND code ILIKE CONCAT('%' || #{userCode} ||'%')
+            </if>
+            <if test="userName != null and userName != '' ">
+                AND full_name ILIKE CONCAT('%' || #{userName} ||'%')
+            </if>
+            <if test="groupCode != null and groupCode != '' ">
+                AND group_code ILIKE CONCAT('%' || #{groupCode} ||'%')
+            </if>
+            <if test="departmentCode != null and departmentCode != '' ">
+                AND department_code ILIKE CONCAT('%' || #{departmentCode} ||'%')
+            </if>
+            <if test="status != null and status >= 0">
+                AND status = #{status}::bool
+            </if>
+        </where>
+    </select>
+
+    <select id="countAll" resultType="Integer">
+        <![CDATA[
+        SELECT COUNT(*)
+        FROM "user"
+        ]]>
+    </select>
+
+    <select id="createdUser"
+            parameterType="com.service.statement.model.User"
+            resultType="com.service.statement.model.User">
+		<![CDATA[
+        INSERT INTO "user"(id,
+                           code,
+                           full_name,
+                           phone_no,
+                           email,
+                           password,
+                           birthday,
+                           group_code,
+                           department_code,
+                           status,
+                           creater,
+                           created_date)
+        VALUES (#{id},
+                #{code},
+                #{fullName},
+                #{phoneNo},
+                #{email},
+                #{password},
+                #{birthday},
+                #{groupCode},
+                #{departmentCode},
+                #{status},
+                #{creater},
+                NOW()) RETURNING *;
+        ]]>
+	</select>
+
+    <select id="updateUser"
+            parameterType="com.service.statement.model.User"
+            resultType="com.service.statement.model.User">
+        <![CDATA[
+        UPDATE "user"
+        SET code            = #{code},
+            full_name       = #{fullName},
+            phone_no        = #{phoneNo},
+            email           = #{email},
+            birthday        = #{birthday},
+            group_code      = #{groupCode},
+            department_code = #{departmentCode},
+            status          = #{status},
+            editer          = #{editer},
+            edited_date     = NOW()
+        WHERE id = #{id} RETURNING code, full_name;
+        ]]>
+    </select>
+
+    <select id="findUserById" parameterType="String"
+            resultType="com.service.statement.model.User">
+		<![CDATA[
+        SELECT *
+        FROM "user"
+        WHERE id = #{id}
+        ]]>
+	</select>
+
+    <select id="findUserByCode" parameterType="String"
+            resultType="com.service.statement.model.User">
+		<![CDATA[
+        SELECT *
+        FROM "user"
+        WHERE code = #{code}
+        ]]>
+	</select>
+
+    <delete id="deleteUser" parameterType="String">
+        DELETE
+        FROM "user"
+        WHERE id = #{id}
+    </delete>
+
+    <select id="getCountByEmail"
+            parameterType="String"
+            resultType="Integer">
+		<![CDATA[
+        SELECT COUNT(*)
+        FROM "user"
+        WHERE email = #{email}
+        ]]>
+	</select>
+
+    <select id="getCountByUserCode"
+            parameterType="String"
+            resultType="Integer">
+		<![CDATA[
+        SELECT COUNT(*)
+        FROM "user"
+        WHERE code = #{code}
+        ]]>
+	</select>
+
+    <select id="getCountByPhoneNo"
+            parameterType="String"
+            resultType="Integer">
+		<![CDATA[
+        SELECT COUNT(*)
+        FROM "user"
+        WHERE phone_no = #{phoneNo}
+        ]]>
+	</select>
+
+    <select id="findByEmailAndPassword"
+            parameterType="String"
+            resultType="com.service.statement.model.User">
+		<![CDATA[
+        SELECT *
+        FROM "user"
+        WHERE email = #{email}
+        ]]>
+	</select>
+
+    <insert id="importExcel" parameterType="java.util.List">
+        INSERT INTO "user"(
+        id,
+        code,
+        full_name,
+        phone_no,
+        email,
+        password,
+        birthday,
+        group_code,
+        department_code,
+        status,
+        creater,
+        created_date)
+        VALUES
+
+        <foreach collection="list" item="element" index="index"
+                 separator=",">
+            (
+            #{element.id},
+            #{element.code},
+            #{element.fullName},
+            #{element.phoneNo},
+            #{element.email},
+            #{element.password},
+            #{element.birthday},
+            #{element.groupCode},
+            #{element.departmentCode},
+            #{element.status},
+            #{element.creater},
+            NOW())
+        </foreach>
+    </insert>
+</mapper>

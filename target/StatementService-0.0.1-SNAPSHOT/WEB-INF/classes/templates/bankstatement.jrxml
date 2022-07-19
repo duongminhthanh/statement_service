@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="54bea7ff-8da1-4504-ba60-c8cc1aae4757">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="62" y="7" width="431" height="20" forecolor="#000000" uuid="219d522d-2149-4bea-a487-ebfb4969aa83"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="14" isBold="true" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[STATEMENT OF ACCOUNT/SAO KE GIAO DICH  TAI KHOAN THANH TOAN]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="767" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="-20" y="0" width="595" height="2" forecolor="#000000" uuid="7e06d21e-7bda-42d8-89bc-2cf64e2e9d5f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-20" y="210" width="595" height="2" forecolor="#000000" uuid="589b3410-9b1d-453e-8f54-9f8de912246c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="180" y="10" width="380" height="10" uuid="1f5983d3-3f3c-4960-97d3-7a8ba456ad5f"/>
+				<textFieldExpression><![CDATA[$P{StatementNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="10" width="180" height="10" forecolor="#000000" uuid="05a2dfa0-05c6-4265-8e53-7bf503a1588a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Calibri" size="10" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[ Statement Reference No./So tham chieu:]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

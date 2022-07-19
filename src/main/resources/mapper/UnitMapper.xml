@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.statement.mapper.UnitMapper">
+
+    <select id="search"
+            resultType="com.service.statement.model.Unit">
+        <![CDATA[
+			SELECT * FROM "unit"
+		]]>
+        <where>
+
+            <if test="code != null and code != '' ">
+                AND code ILIKE CONCAT('%' || #{code} ||'%')
+            </if>
+            <if test="name != null and name != '' ">
+                AND (name ILIKE CONCAT('%' || #{name} ||'%') OR name_en ILIKE CONCAT('%'
+                || #{name} ||'%'))
+            </if>
+<!--            <if test="status != null and status >= 0">-->
+<!--                AND status = #{status}::bool-->
+<!--            </if>-->
+        </where>
+        ORDER BY code ASC
+        <if test="limit > 0">
+            OFFSET (#{page}-1) * #{limit} FETCH NEXT #{limit} ROWS ONLY
+        </if>
+    </select>
+
+    <select id="count" resultType="Integer">
+        <![CDATA[
+			SELECT COUNT(*) FROM "unit"
+		]]>
+        <where>
+
+            <if test="code != null and code != '' ">
+                AND code ILIKE CONCAT('%' || #{code} ||'%')
+            </if>
+            <if test="name != null and name != '' ">
+                AND (name ILIKE CONCAT('%' || #{name} ||'%') OR name_en ILIKE CONCAT('%'
+                || #{name} ||'%'))
+            </if>
+<!--            <if test="status != null and status >= 0">-->
+<!--                AND status = #{status}::bool-->
+<!--            </if>-->
+        </where>
+    </select>
+
+    <select id="countAll" resultType="Integer">
+        <![CDATA[
+        SELECT COUNT(*)
+        FROM "unit"
+        ]]>
+	</select>
+
+    <select id="createUnit"
+            parameterType="com.service.statement.model.Unit"
+            resultType="com.service.statement.model.Unit">
+		<![CDATA[
+        INSERT INTO unit(
+        name,
+        code,
+        name_en,
+        created_date,
+        id)
+        VALUES(
+        #{name},
+        #{code},
+        #{nameEn},
+        now(),
+        #{id}
+        )RETURNING *;
+        ]]>
+	</select>
+
+    <select id="updateUnit"
+            parameterType="com.service.statement.model.Unit"
+            resultType="com.service.statement.model.Unit">
+        <![CDATA[
+        UPDATE "unit"
+        SET name        = #{name},
+            code        = #{code},
+            name_en     = #{nameEn},
+            created_date = NOW()
+        WHERE id = #{id} RETURNING *;
+        ]]>
+	</select>
+
+    <select id="findUnitById" parameterType="String"
+            resultType="com.service.statement.model.Unit">
+		<![CDATA[
+        SELECT *
+        FROM "unit"
+        WHERE id = #{id}
+        ]]>
+	</select>
+
+    <select id="findUnitByCode" parameterType="String"
+            resultType="com.service.statement.model.Unit">
+		<![CDATA[
+        SELECT *
+        FROM "unit"
+        WHERE code = #{code}
+        ]]>
+	</select>
+
+    <delete id="deleteUnit" parameterType="String">
+		DELETE
+		FROM "unit"
+		WHERE id = #{id}
+	</delete>
+
+    <insert id="importExcel" parameterType="java.util.List">
+        INSERT INTO "unit"(
+        code,
+        name,
+        name_en,
+        created_date,
+        id)
+        VALUES
+
+        <foreach collection="list" item="element" index="index"
+                 separator=",">
+            (
+            #{element.code},
+            #{element.name},
+            #{element.nameEn},
+            NOW(),
+            #{element.id})
+        </foreach>
+    </insert>
+
+
+</mapper>

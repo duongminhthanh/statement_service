@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.statement.mapper.DepartmentMapper">
+
+    <select id="search"
+            resultType="com.service.statement.model.Department">
+        <![CDATA[
+			SELECT
+			    name,
+                name_en,
+                status,
+                creater,
+                created_date,
+                editer,
+                edited_date,
+                unit,
+                id,
+                code
+			FROM "department"
+		]]>
+        <where>
+
+            <if test="code != null and code != '' ">
+                AND code ILIKE CONCAT('%' || #{code} ||'%')
+            </if>
+            <if test="name != null and name != '' ">
+                AND (name ILIKE CONCAT('%' || #{name} ||'%') OR name_en ILIKE CONCAT('%' || #{name} ||'%'))
+            </if>
+            <if test="status != null and status >= 0">
+                AND status = #{status}::bool
+            </if>
+            <if test="unit != null and unit != '' ">
+                AND unit ILIKE CONCAT('%' || #{unit} ||'%')
+            </if>
+
+
+        </where>
+        ORDER BY code
+        <if test="limit > 0">
+            OFFSET (#{page}-1) * #{limit} FETCH NEXT #{limit} ROWS ONLY
+        </if>
+    </select>
+
+    <select id="count" resultType="Integer">
+        <![CDATA[
+			SELECT COUNT(*) FROM "department"
+		]]>
+        <where>
+
+            <if test="code != null and code != '' ">
+                AND code ILIKE CONCAT('%' || #{code} ||'%')
+            </if>
+            <if test="name != null and name != '' ">
+                AND (name ILIKE CONCAT('%' || #{name} ||'%') OR name_en ILIKE CONCAT('%' || #{name} ||'%'))
+            </if>
+            <if test="status != null and status >= 0">
+                AND status = #{status}::bool
+            </if>
+            <if test="unit != null and unit != '' ">
+                AND unit ILIKE CONCAT('%' || #{unit} ||'%')
+            </if>
+
+        </where>
+    </select>
+
+    <select id="countAll" resultType="Integer">
+        <![CDATA[
+
+                SELECT COUNT(*)
+                FROM "department"
+
+        ]]>
+    </select>
+
+    <select id="createDepartment"
+            parameterType="com.service.statement.model.Department"
+            resultType="com.service.statement.model.Department">
+		<![CDATA[
+
+                INSERT INTO "department"(name,
+                                       name_en,
+                                       status,
+                                       creater,
+                                       created_date,
+                                       unit,
+                                       id,
+                                       code
+                                       )
+                VALUES (
+                        #{name},
+                        #{nameEn},
+                        #{status},
+                        #{creater},
+                        NOW(),
+                        #{unit},
+                        #{id},
+                        #{code}) RETURNING *;
+
+        ]]>
+	</select>
+
+    <select id="updateDepartment"
+            parameterType="com.service.statement.model.Department"
+            resultType="com.service.statement.model.Department">
+        <![CDATA[
+
+                UPDATE "department"
+                SET
+                    name        = #{name},
+                    name_en     = #{nameEn},
+                    unit        = #{unit},
+                    code        = #{code}
+                WHERE id = #{id} RETURNING *;
+
+        ]]>
+    </select>
+
+    <select id="findDepartmentById" parameterType="String"
+            resultType="com.service.statement.model.Department">
+		<![CDATA[
+
+                SELECT *
+                FROM "department"
+                WHERE id = #{id}
+
+        ]]>
+	</select>
+
+    <select id="findDepartmentByCode" parameterType="String"
+            resultType="com.service.statement.model.Department">
+		<![CDATA[
+
+                SELECT *
+                FROM "department"
+                WHERE code = #{code}
+
+        ]]>
+	</select>
+
+    <delete id="deleteDepartment" parameterType="String">
+        DELETE
+        FROM "department"
+        WHERE id = #{id}
+    </delete>
+
+    <insert id="importExcel" parameterType="java.util.List">
+        INSERT INTO "department"(
+        name,
+        name_en,
+        status,
+        creater,
+        created_date,
+        unit,
+        id,
+        code
+        )
+        VALUES
+
+        <foreach collection="list" item="element" index="index"
+                 separator=",">
+            (
+            #{element.name},
+            #{element.nameEn},
+            #{element.status},
+            #{element.creater},
+            NOW(),
+            #{element.unit},
+            #{element.id},
+            #{element.code})
+        </foreach>
+    </insert>
+
+
+</mapper>

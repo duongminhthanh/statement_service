@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.statement.mapper.ImportManagementMapper">
+    <select id="search"
+            resultType="com.service.statement.model.BankStatement">
+        <![CDATA[
+			SELECT
+			   *
+			FROM "bank_statement"
+		]]>
+        <where>
+
+            <if test="fileType != null and fileType != '' ">
+                AND file_type ILIKE CONCAT('%' || #{fileType} ||'%')
+            </if>
+            <if test="status != null and status != '' ">
+                AND status ILIKE CONCAT('%' || #{status} ||'%')
+            </if>
+            <if test="searchKey != null and searchKey != '' ">
+                AND file_name ILIKE CONCAT('%' || #{searchKey} ||'%')
+            </if>
+            <if test="transactionDate != null">
+                AND created_date = #{transactionDate}
+            </if>
+        </where>
+        ORDER BY created_date
+        <if test="limit > 0">
+            OFFSET (#{page}-1) * #{limit} FETCH NEXT #{limit} ROWS ONLY
+        </if>
+    </select>
+
+    <select id="count" resultType="Integer">
+        <![CDATA[
+			SELECT COUNT(*) FROM "bank_statement"
+		]]>
+        <where>
+
+            <if test="fileType != null and fileType != '' ">
+                AND file_type ILIKE CONCAT('%' || #{fileType} ||'%')
+            </if>
+            <if test="status != null and status != '' ">
+                AND status ILIKE CONCAT('%' || #{status} ||'%')
+            </if>
+            <if test="searchKey != null and searchKey != '' ">
+                AND file_name ILIKE CONCAT('%' || #{searchKey} ||'%')
+            </if>
+            <if test="transactionDate != null">
+                AND created_date = #{transactionDate}
+            </if>
+        </where>
+    </select>
+
+    <insert id="importExcel" parameterType="java.util.List">
+        INSERT INTO "bank_statement"(
+        id,
+        bank_code,
+        branch_code,
+        statement_number,
+        from_date,
+        to_date,
+        superior_branch_code,
+        accnoo,
+        custno,
+        posttype,
+        orderno,
+        notranfalg,
+        status,
+        file_name,
+        file_type,
+        creater,
+        created_date)
+        VALUES
+
+        <foreach collection="list" item="element" index="index"
+                 separator=",">
+            (
+            #{element.id},
+            #{element.bankCode},
+            #{element.branchCode},
+            #{element.statementNumber},
+            #{element.fromDate},
+            #{element.toDate},
+            #{element.superiorBranchCode},
+            #{element.accnoo},
+            #{element.custno},
+            #{element.posttype},
+            #{element.orderno},
+            #{element.notranfalg},
+            #{element.status},
+            #{element.fileName},
+            #{element.fileType},
+            #{element.creater},
+            NOW())
+        </foreach>
+    </insert>
+</mapper>
